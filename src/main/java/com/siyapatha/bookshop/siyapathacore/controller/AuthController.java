@@ -1,6 +1,6 @@
 package com.siyapatha.bookshop.siyapathacore.controller;
 
-import com.siyapatha.bookshop.siyapathacore.security.APIRequestValidator;
+import com.siyapatha.bookshop.siyapathacore.security.APIKeyManager;
 import com.siyapatha.bookshop.siyapathacore.security.ClientCredentials;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    APIRequestValidator validator = new APIRequestValidator();
+    APIKeyManager validator = APIKeyManager.getInstance();
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createAPIKey(@RequestBody ClientCredentials credentials) {
-        if (credentials != null) {
+    public ResponseEntity<HttpHeaders> createAPIKey(@RequestBody ClientCredentials credentials) {
+        if (credentials != null && credentials.getClientID() != null && credentials.getClientSecret() != null) {
             final String apiKey = validator.createAPIKey(credentials);
             if (apiKey != null) {
                 HttpHeaders header = new HttpHeaders();
@@ -26,6 +26,8 @@ public class AuthController {
                 return new ResponseEntity<>(header, HttpStatus.CREATED);
             }
         }
-        return new ResponseEntity<>("API Key already exists", HttpStatus.BAD_REQUEST);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Message", "Please contact admin");
+        return new ResponseEntity<>(httpHeaders, HttpStatus.BAD_REQUEST);
     }
 }

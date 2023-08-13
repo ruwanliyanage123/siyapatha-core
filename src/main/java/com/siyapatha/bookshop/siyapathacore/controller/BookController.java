@@ -1,12 +1,11 @@
 package com.siyapatha.bookshop.siyapathacore.controller;
 
 import com.siyapatha.bookshop.siyapathacore.bean.Book;
-import com.siyapatha.bookshop.siyapathacore.security.APIRequestValidator;
+import com.siyapatha.bookshop.siyapathacore.security.APIKeyManager;
 import com.siyapatha.bookshop.siyapathacore.service.BookRecordHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -24,10 +23,10 @@ public class BookController {
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Book> createBook(@RequestHeader("Authorization") String apiKey, @RequestBody Book book) {
-        if(apiKey != null && !apiKey.isEmpty() && APIRequestValidator.getInstance().isValidRequest(apiKey)) {
+        if (apiKey != null && !apiKey.isEmpty() && APIKeyManager.getInstance().isValidAPIKey(apiKey)) {
             bookRecordHandler.saveBook(book);
             return new ResponseEntity<>(HttpStatus.CREATED);
-        }else{
+        } else {
             return new ResponseEntity<>(HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
     }
