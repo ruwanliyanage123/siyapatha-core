@@ -12,7 +12,6 @@ public class BookRecordHandler {
 
     public void saveBook(Book book){
         bookMap.put(book.getIsbn(), book);
-        System.out.println("Map size :" +bookMap.size());
     }
 
     public Book getBookByIsbn(int isbn){
