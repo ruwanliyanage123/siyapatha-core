@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,9 +22,13 @@ public class BookController {
     private BookRecordHandler bookRecordHandler = new BookRecordHandler();
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Book> createBook(@RequestBody Book book) {
-        bookRecordHandler.saveBook(book);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<Book> createBook(@RequestHeader("Authorization") String apiKey, @RequestBody Book book) {
+        if(apiKey.equals("ruwan")) {
+            bookRecordHandler.saveBook(book);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+        }
     }
 
     @RequestMapping(value = {"/findBookByIsbn/{isbn}"}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
