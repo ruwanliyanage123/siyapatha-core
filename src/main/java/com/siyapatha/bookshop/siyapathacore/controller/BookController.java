@@ -19,12 +19,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/book")
 public class BookController {
-    private BookRecordHandler bookRecordHandler = new BookRecordHandler();
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Book> createBook(@RequestHeader("Authorization") String apiKey, @RequestBody Book book) {
         if (apiKey != null && !apiKey.isEmpty() && APIKeyManager.getInstance().isValidAPIKey(apiKey)) {
-            bookRecordHandler.saveBook(book);
+            BookRecordHandler.getInstance().saveBook(book);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.NON_AUTHORITATIVE_INFORMATION);
@@ -33,19 +32,19 @@ public class BookController {
 
     @RequestMapping(value = {"/findBookByIsbn/{isbn}"}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Book> findBookByIsbn(@PathVariable("isbn") int isbnNumber) {
-        Book book = bookRecordHandler.getBookByIsbn(isbnNumber);
+        Book book = BookRecordHandler.getInstance().getBookByIsbn(isbnNumber);
         return new ResponseEntity<>(book, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/findBookByName", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Book> findBookByName(@RequestParam("name") String isbnNumber) {
-        Book book = bookRecordHandler.getBookByName(isbnNumber);
+        Book book = BookRecordHandler.getInstance().getBookByName(isbnNumber);
         return new ResponseEntity<>(book, HttpStatus.CREATED);
     }
 
     @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Book>> getAllBooks() {
-        List<Book> books = bookRecordHandler.getAllBooks();
+        List<Book> books = BookRecordHandler.getInstance().getAllBooks();
         return new ResponseEntity<>(books, HttpStatus.CREATED);
     }
 }
