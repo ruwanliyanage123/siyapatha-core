@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
-    private String isbn;
+    private int isbn;
     private String name;
     private String author;
     private double price;
